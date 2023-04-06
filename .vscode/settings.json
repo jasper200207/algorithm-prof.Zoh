@@ -9,7 +9,13 @@
     "__split_buffer": "cpp",
     "array": "cpp",
     "deque": "cpp",
-    "queue": "cpp"
+    "queue": "cpp",
+    "__hash_table": "cpp",
+    "__tree": "cpp",
+    "bitset": "cpp",
+    "initializer_list": "cpp",
+    "set": "cpp",
+    "unordered_map": "cpp"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
