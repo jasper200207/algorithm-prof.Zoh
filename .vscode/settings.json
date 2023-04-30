@@ -1,5 +1,6 @@
 {
   "files.associations": {
+    "*.embeddedhtml": "html",
     "iostream": "cpp",
     "__locale": "cpp",
     "__string": "cpp",
@@ -15,7 +16,8 @@
     "bitset": "cpp",
     "initializer_list": "cpp",
     "set": "cpp",
-    "unordered_map": "cpp"
+    "unordered_map": "cpp",
+    "ostream": "cpp"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
