@@ -17,7 +17,8 @@
     "initializer_list": "cpp",
     "set": "cpp",
     "unordered_map": "cpp",
-    "ostream": "cpp"
+    "ostream": "cpp",
+    "__bit_reference": "cpp"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
