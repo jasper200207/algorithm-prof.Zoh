@@ -18,7 +18,10 @@
     "set": "cpp",
     "unordered_map": "cpp",
     "ostream": "cpp",
-    "__bit_reference": "cpp"
+    "__bit_reference": "cpp",
+    "functional": "cpp",
+    "iosfwd": "cpp",
+    "limits": "cpp"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
