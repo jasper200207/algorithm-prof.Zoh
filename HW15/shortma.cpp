@@ -1,70 +1,76 @@
 #include<iostream>
 #include<vector>
-#include<utility>
 #include<string>
+#include<algorithm>
 #define MAX 1000000000
 using namespace std;
 
-int graph[26][26];
+typedef struct Node {
+    int to;
+    int distance;
+} Node;
 
-typedef pair<string,int> Solution;
-
-class Path {
-    private:
-        int checkList[26];
-        vector<int> path;
-        vector<int> distance;
-    public:
-        Path() {
-            fill_n(checkList, 26, -1);
-        }
-        bool check(int node) {
-            return checkList[node] != -1;
-        }
-        void add(int node) {
-            checkList[node] = path.size();
-            distance.push_back(path.empty()?0:graph[path.back()][node]);
-            path.push_back(node);
-        }
-        Solution get_cycle(int node) {
-            if(!check(node)) return make_pair("", MAX);
-            string cycle = "";
-            int total = 0;
-            for(int i=checkList[node];i<path.size();i++) {
-                cycle += (char)(path[i]+'a');
-                total += distance[i];
-            }
-            return make_pair(cycle+(char)(node+'a'), total+graph[path.back()][node]);
-        }
-};
-
-Solution dfs(Path path, int back_node) {
-    Solution solution = make_pair("", MAX);
-    for(int i=0;i<26;i++) {
-        if(back_node == i) continue;
-        else if(back_node != -1 && graph[back_node][i] == MAX) continue;;
-        Solution cycle = make_pair("", MAX);
-        if(path.check(i)) {
-            cycle = path.get_cycle(i);
-        }else {
-            Path next = path;
-            next.add(i);
-            cycle = dfs(next, i);
-        }
-        if(cycle.second < solution.second) solution = cycle;
-    }
-    return solution;
-}
+typedef struct Solution {
+    string path;
+    int distance;
+} Solution;
 
 int main() {
-    fill(&graph[0][0], &graph[0][0] + sizeof(graph) / sizeof(int), MAX);
+    vector<Node> graph[26];
     int n; cin >> n;
     for(int i=0;i<n;i++) {
-        char node1, node2; int distance;
-        cin >> node1 >> node2 >> distance;
-        graph[node1-'a'][node2-'a'] = graph[node2-'a'][node1-'a'] = distance;
+        char v1, v2;
+        int distance; 
+        cin >> v1 >> v2 >> distance;
+        graph[v1-'a'].push_back({v2-'a', distance});
+        graph[v2-'a'].push_back({v1-'a', distance});
     }
-    Solution solution = dfs(Path(), -1);
-    if(solution.second == MAX) cout << -1 << endl;
-    else cout << solution.first << endl;
+    Solution solution = {"-1", MAX};
+    for(int root=0; root<26; root++) {
+        for(Node start_node : graph[root]) {
+            for(Node end_node : graph[root]) {
+                if(start_node.to >= end_node.to) continue;
+                bool checked[26] = {};
+                checked[root] = true;
+                int distance[26], prev[26], check_cnt=1;
+                fill_n(distance, 26, MAX);
+                distance[root] = distance[start_node.to] = 0;
+                int now = start_node.to;
+                while(check_cnt < 26) {
+                    for(int i=0;i<graph[now].size();i++) {
+                        Node next = graph[now][i];
+                        if(!checked[next.to] && distance[next.to] > distance[now] + next.distance) {
+                            distance[next.to] = distance[now] + next.distance;
+                            prev[next.to] = now;
+                        }
+                    }
+                    checked[now] = true;
+                    check_cnt++;
+                    int min = MAX;
+                    for(int i=0;i<26;i++) {
+                        if(!checked[i] && distance[i] < min) {
+                            min = distance[i];
+                            now = i;
+                        }
+                    }
+                    if(now == end_node.to) break;
+                }
+                if(solution.distance > distance[end_node.to] + start_node.distance + end_node.distance) {
+                    solution.distance = distance[end_node.to] + start_node.distance + end_node.distance;
+                    solution.path = (char)(root + 'a');
+                    int now = end_node.to;
+                    while(now != start_node.to) {
+                        solution.path = " " + solution.path;
+                        solution.path = (char)(now + 'a') + solution.path;
+                        now = prev[now];
+                    }
+                    solution.path = " " + solution.path;
+                    solution.path = (char)(start_node.to + 'a') + solution.path;
+                    solution.path = " " + solution.path;
+                    solution.path = (char)(root + 'a') + solution.path;
+                }
+            }
+        }
+    }
+    cout << solution.path << endl;
 }
